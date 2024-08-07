@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  frontend:
+      depends_on:
+        - backend
+      build: ./frontend/ 
+      restart: unless-stopped
+      volumes:
+        - "./frontend/app/:/frontend"
+        - "/frontend/node_modules"
+      networks:
+        - site-network
+      ports:
+        - "3000:3000"
+    
+
+  backend:
+      depends_on:
+        - mysqldb
+      build: ./backend/ 
+      restart: unless-stopped
+      volumes:
+        - "./backend/app/:/backend"
+        - "/backend/node_modules"
+      env_file:
+        - ./backend/app/.env
+      networks:
+        - site-network
+      ports:
+        - "3001:3000"
+      environment:
+        - DB_HOST=mysqldb
+        - DB_USER=node-server
+        - DB_PASSWORD=root
+        - DB_NAME=node-server-db
+        - DB_PORT=3306
+
+
+  mysqldb:
+      image: mysql:latest
+      restart: always
+      volumes:
+        - "mysql:/var/lib/mysql"
+      networks:
+        - site-network
+      ports:
+        - "3306:3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=node-server-db
+        - MYSQL_PASSWORD=node
+
+  phpmyadmin:
+      image: phpmyadmin:latest
+      depends_on:
+        - mysqldb
+      restart: always
+      networks:
+        - site-network
+      ports:
+        - "8080:80"
+      environment:
+        - PMA_HOST=mysqldb
+        - MYSQL_ROOT_PASSWORD=root
+
+volumes:
+  mysql:
+networks:
+  site-network:
+
+    
