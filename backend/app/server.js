@@ -21,6 +21,7 @@ app.use(express.json());
 app.use(morgan("tiny")); //logging
 
 require("./models/User");
+require("./models/Role");
 
 app.listen(PORT, () => {
   console.log(`Your are listening on port ${PORT}`);
