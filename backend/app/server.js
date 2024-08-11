@@ -23,6 +23,7 @@ app.use(morgan("tiny")); //logging
 require("./models/User");
 require("./models/Role");
 require("./models/Comment");
+require("./models/Post");
 
 app.listen(PORT, () => {
   console.log(`Your are listening on port ${PORT}`);
