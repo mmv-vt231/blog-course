@@ -24,6 +24,7 @@ require("./models/User");
 require("./models/Role");
 require("./models/Comment");
 require("./models/Post");
+require("./models/Tag");
 
 app.listen(PORT, () => {
   console.log(`Your are listening on port ${PORT}`);
