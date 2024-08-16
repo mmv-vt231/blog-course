@@ -16,11 +16,11 @@ router.post("/", (req, res) => {
 })
 
 router.put("/:id", (req, res) => {
-
+    controller.updatePost(req, res);
 })
 
 router.delete("/:id", (req, res) => {
-
+    controller.deletePost(req, res);
 })
 
 module.exports = router;
