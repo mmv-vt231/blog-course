@@ -1,5 +1,4 @@
 const Post = require("./../../../models/Post");
-const Tag = require("../../../models/Tag");
 
 module.exports.getPostList = async (req, res) => {
     try {
@@ -78,7 +77,7 @@ module.exports.deletePost = async (req, res) => {
     try {
         const postId = req.params.id;
 
-        const deleteCount = await Post.destroy({where: { id: postId }});
+        const deleteCount = await Post.destroy({ where: { id: postId }});
 
         if (!deleteCount) return res.status(404);
 

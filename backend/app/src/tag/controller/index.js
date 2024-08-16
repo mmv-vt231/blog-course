@@ -75,7 +75,7 @@ module.exports.deleteTag = async (req, res) => {
     try {
         const tagId = req.params.id;
 
-        const deleteCount = await Tag.destroy({where: { id: tagId }});
+        const deleteCount = await Tag.destroy({ where: { id: tagId }});
 
         if (!deleteCount) return res.status(404);
 
