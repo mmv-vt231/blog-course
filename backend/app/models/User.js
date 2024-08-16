@@ -1,6 +1,9 @@
 const sequelize = require("../DB/mysql");
 const { DataTypes } = require("sequelize");
 
+const Comment = require("./Comment");
+const Like = require("./Like");
+
 const User = sequelize.define(
   "user",
   {
@@ -35,8 +38,16 @@ const User = sequelize.define(
       allowNull: false,
       defaultValue: 0
     }
-  }
+  }, {
+      timestamps: true,
+    }
 );
+
+User.hasMany(Comment, {foreignKey: "user_id", sourceKey: "id"});
+Comment.belongsTo(User, {foreignKey: "user_id", sourceKey: "id"});
+
+User.hasMany(Like, {foreignKey: "user_id", sourceKey: "id"});
+Like.belongsTo(User, {foreignKey: "user_id", sourceKey: "id"});
 
 (async () => {
   try {

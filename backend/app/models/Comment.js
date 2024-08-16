@@ -30,8 +30,13 @@ const Comment = sequelize.define(
             allowNull: false,
             defaultValue: 0
         },
+    }, {
+        timestamps: true,
     }
-);
+)
+
+Comment.hasMany(Comment, {foreignKey: "parent_id", sourceKey: "id"});
+Comment.belongsTo(Comment, {foreignKey: "parent_id", sourceKey: "id"});
 
 (async () => {
     try {
