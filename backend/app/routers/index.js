@@ -3,6 +3,7 @@ const tag = require("../src/tag/routes");
 const like = require("../src/like/routes");
 const role = require("../src/role/routes");
 const user = require("../src/user/routes");
+const comment = require("../src/comment/routes");
 
 module.exports = (app) => {
     app.use("/post", post);
@@ -10,6 +11,7 @@ module.exports = (app) => {
     app.use("/like", like);
     app.use("/role", role);
     app.use("/user", user);
+    app.use("/comment", comment);
 
     app.use("*", (req, res) => {
         res.status(404).send("Not Found");
