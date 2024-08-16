@@ -1,4 +1,5 @@
 const Post = require("./../../../models/Post");
+const Tag = require("../../../models/Tag");
 
 module.exports.getPostList = async (req, res) => {
     try {
@@ -16,11 +17,11 @@ module.exports.getPost = async (req, res) => {
     try {
         const postId = req.params.id;
 
-        const post = Post.findByPk(postId);
+        const post = await Post.findByPk(postId);
 
-        if (post) return res.status(404);
+        if (!post) return res.status(404);
 
-        res.status(200).json(posts);
+        res.status(200).json(post);
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -31,8 +32,6 @@ module.exports.getPost = async (req, res) => {
 module.exports.createPost = async (req, res) => {
     try {
         const {title, content, short_description, is_private} = req.body;
-
-        console.log("\x1b[31m Create Post \x1b[0m", req.body);
 
         if(!title || !content || !short_description || is_private === undefined) {
             return res.status(400).json({
@@ -58,18 +57,14 @@ module.exports.createPost = async (req, res) => {
 module.exports.updatePost = async (req, res) => {
     try {
         const postId = req.params.id;
-        const {title, content, short_description, is_private} = req.body;
 
-        const post = Post.findByPk(postId);
+        const [updateCount] = await Post.update(req.body, {
+            where: { id: postId },
+        });
 
-        if (post) return res.status(404);
+        if (!updateCount) return res.status(404);
 
-        post.title = title;
-        post.content = content;
-        post.short_description = short_description;
-        post.is_private = is_private;
-
-        await post.save();
+        const post = await Post.findByPk(postId);
 
         res.status(200).json(post);
     } catch (e) {
@@ -82,13 +77,12 @@ module.exports.updatePost = async (req, res) => {
 module.exports.deletePost = async (req, res) => {
     try {
         const postId = req.params.id;
-        const post = await Post.findByPk(postId);
 
-        if (post) return res.status(404);
+        const deleteCount = await Post.destroy({where: { id: postId }});
 
-        await post.destroy();
+        if (!deleteCount) return res.status(404);
 
-        res.status(200).json(post);
+        res.status(200);
     } catch (e) {
         res.status(500).json({
             error: e.message
