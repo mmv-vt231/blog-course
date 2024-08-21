@@ -18,7 +18,7 @@ module.exports.getUser = async (req, res) => {
 
         const user = await User.findByPk(userId);
 
-        if (!user) return res.status(404);
+        if (!user) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(user);
     } catch (e) {
@@ -57,14 +57,18 @@ module.exports.createUser = async (req, res) => {
 module.exports.updateUser = async (req, res) => {
     try {
         const userId = req.params.id;
-
-        const [updateCount] = await User.update(req.body, {
-            where: { id: userId },
-        });
-
-        if (!updateCount) return res.status(404);
+        const { role_id, email, nickname, allowed_notifications, } = req.body;
 
         const user = await User.findByPk(userId);
+
+        if (!user) return res.status(404).json({ error: 'Not found' });
+
+        user.role_id = role_id || user.role_id;
+        user.email = email || user.email;
+        user.nickname = nickname || user.nickname;
+        user.allowed_notifications = allowed_notifications || user.allowed_notifications;
+
+        await user.save();
 
         res.status(200).json(user);
     } catch (e) {
@@ -78,11 +82,13 @@ module.exports.deleteUser = async (req, res) => {
     try {
         const userId = req.params.id;
 
-        const deleteCount = await User.destroy({ where: { id: userId }});
+        const user = await User.findByPk(userId);
 
-        if (!deleteCount) return res.status(404);
+        if (!user) return res.status(404).json({ error: 'Not found' });
 
-        res.status(200);
+        await user.destroy();
+
+        res.status(204);
     } catch (e) {
         res.status(500).json({
             error: e.message

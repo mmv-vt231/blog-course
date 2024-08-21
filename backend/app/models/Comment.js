@@ -25,18 +25,13 @@ const Comment = sequelize.define(
             type: DataTypes.TEXT,
             allowNull: false,
         },
-        like_count: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0
-        },
-    }, {
-        timestamps: true,
-    }
-)
-
-Comment.hasMany(Comment, {foreignKey: "parent_id", sourceKey: "id"});
-Comment.belongsTo(Comment, {foreignKey: "parent_id", sourceKey: "id"});
+        created_at: {
+            type: 'TIMESTAMP',
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+            allowNull: false
+        }
+    },
+);
 
 (async () => {
     try {

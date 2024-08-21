@@ -18,7 +18,7 @@ module.exports.getComment = async (req, res) => {
 
         const comment = await Comment.findByPk(commentId);
 
-        if (!comment) return res.status(404);
+        if (!comment) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(comment);
     } catch (e) {
@@ -56,14 +56,15 @@ module.exports.createComment = async (req, res) => {
 module.exports.updateComment = async (req, res) => {
     try {
         const commentId = req.params.id;
-
-        const [updateCount] = await Comment.update(req.body, {
-            where: { id: commentId },
-        });
-
-        if (!updateCount) return res.status(404);
+        const { content } = req.body;
 
         const comment = await Comment.findByPk(commentId);
+
+        if (!comment) return res.status(404).json({ error: 'Not found' });
+
+        comment.content = content || comment.content;
+
+        await comment.save();
 
         res.status(200).json(comment);
     } catch (e) {
@@ -77,11 +78,13 @@ module.exports.deleteComment = async (req, res) => {
     try {
         const commentId = req.params.id;
 
-        const deleteCount = await Comment.destroy({ where: { id: commentId }});
+        const comment = await Comment.findByPk(commentId);
 
-        if (!deleteCount) return res.status(404);
+        if (!comment) return res.status(404).json({ error: 'Not found' });
 
-        res.status(200);
+        await comment.destroy();
+
+        res.status(204);
     } catch (e) {
         res.status(500).json({
             error: e.message

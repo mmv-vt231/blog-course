@@ -15,9 +15,12 @@ const Role = sequelize.define(
             type: DataTypes.STRING(255),
             allowNull: false,
         },
-    }, {
-        timestamps: true,
-    }
+        created_at: {
+            type: 'TIMESTAMP',
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+            allowNull: false
+        }
+    },
 );
 
 Role.hasMany(User, {foreignKey: "role_id", sourceKey: "id"});
