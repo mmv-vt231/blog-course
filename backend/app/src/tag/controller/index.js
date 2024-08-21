@@ -18,7 +18,7 @@ module.exports.getTag = async (req, res) => {
 
         const tag = await Tag.findByPk(tagId);
 
-        if (!tag) return res.status(404);
+        if (!tag) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(tag);
     } catch (e) {
@@ -54,14 +54,16 @@ module.exports.createTag = async (req, res) => {
 module.exports.updateTag = async (req, res) => {
     try {
         const tagId = req.params.id;
-
-        const [updateCount] = await Tag.update(req.body, {
-            where: { id: tagId },
-        });
-
-        if (!updateCount) return res.status(404);
+        const { name, icon_path } = req.body;
 
         const tag = await Tag.findByPk(tagId);
+
+        if (!tag) return res.status(404).json({ error: 'Not found' });
+
+        tag.name = name || tag.name;
+        tag.icon_path = icon_path || tag.icon_path;
+
+        await tag.save();
 
         res.status(200).json(tag);
     } catch (e) {
@@ -75,11 +77,13 @@ module.exports.deleteTag = async (req, res) => {
     try {
         const tagId = req.params.id;
 
-        const deleteCount = await Tag.destroy({ where: { id: tagId }});
+        const tag = await Tag.findByPk(tagId);
 
-        if (!deleteCount) return res.status(404);
+        if (!tag) return res.status(404).json({ error: 'Not found' });
 
-        res.status(200);
+        await tag.destroy();
+
+        res.status(204);
     } catch (e) {
         res.status(500).json({
             error: e.message

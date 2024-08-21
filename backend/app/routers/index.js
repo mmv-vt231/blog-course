@@ -10,7 +10,7 @@ module.exports = (app) => {
     app.use("/tag", tag);
     app.use("/like", like);
     app.use("/role", role);
-    app.use("/user", user);
+    app.use("/user", user); 
     app.use("/comment", comment);
 
     app.use("*", (req, res) => {

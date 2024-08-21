@@ -18,7 +18,7 @@ module.exports.getRole = async (req, res) => {
 
         const role = await Role.findByPk(roleId);
 
-        if (!role) return res.status(404);
+        if (!role) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(role);
     } catch (e) {
@@ -53,14 +53,15 @@ module.exports.createRole = async (req, res) => {
 module.exports.updateRole = async (req, res) => {
     try {
         const roleId = req.params.id;
-
-        const [updateCount] = await Role.update(req.body, {
-            where: { id: roleId },
-        });
-
-        if (!updateCount) return res.status(404);
+        const { name } = req.body;
 
         const role = await Role.findByPk(roleId);
+
+        if (!role) return res.status(404).json({ error: 'Not found' });
+
+        role.name = name || role.name;
+
+        await role.save();
 
         res.status(200).json(role);
     } catch (e) {
@@ -74,11 +75,13 @@ module.exports.deleteRole = async (req, res) => {
     try {
         const roleId = req.params.id;
 
-        const deleteCount = await Role.destroy({where: { id: roleId }});
+        const role = await Role.findByPk(roleId);
 
-        if (!deleteCount) return res.status(404);
+        if (!role) return res.status(404).json({ error: 'Not found' });
 
-        res.status(200);
+        await role.destroy();
+
+        res.status(204);
     } catch (e) {
         res.status(500).json({
             error: e.message

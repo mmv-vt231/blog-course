@@ -37,10 +37,13 @@ const User = sequelize.define(
       type: DataTypes.TINYINT,
       allowNull: false,
       defaultValue: 0
+    },
+    created_at: {
+      type: 'TIMESTAMP',
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+      allowNull: false
     }
-  }, {
-      timestamps: true,
-    }
+  }
 );
 
 User.hasMany(Comment, {foreignKey: "user_id", sourceKey: "id"});

@@ -15,10 +15,6 @@ router.post("/", (req, res) => {
     controller.createLike(req, res);
 })
 
-router.put("/:id", (req, res) => {
-    controller.updateLike(req, res);
-})
-
 router.delete("/:id", (req, res) => {
     controller.deleteLike(req, res);
 })

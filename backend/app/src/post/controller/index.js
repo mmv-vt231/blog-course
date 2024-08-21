@@ -18,7 +18,7 @@ module.exports.getPost = async (req, res) => {
 
         const post = await Post.findByPk(postId);
 
-        if (!post) return res.status(404);
+        if (!post) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(post);
     } catch (e) {
@@ -56,14 +56,18 @@ module.exports.createPost = async (req, res) => {
 module.exports.updatePost = async (req, res) => {
     try {
         const postId = req.params.id;
-
-        const [updateCount] = await Post.update(req.body, {
-            where: { id: postId },
-        });
-
-        if (!updateCount) return res.status(404);
+        const { title, content, short_description, is_private } = req.body;
 
         const post = await Post.findByPk(postId);
+
+        if (!post) return res.status(404).json({ error: 'Not found' });
+
+        post.title = title || post.title;
+        post.content = content || post.content;
+        post.short_description = short_description || post.short_description;
+        post.is_private = is_private || post.is_private;
+
+        await post.save();
 
         res.status(200).json(post);
     } catch (e) {
@@ -77,11 +81,13 @@ module.exports.deletePost = async (req, res) => {
     try {
         const postId = req.params.id;
 
-        const deleteCount = await Post.destroy({ where: { id: postId }});
+        const post = await Post.findByPk(postId);
 
-        if (!deleteCount) return res.status(404);
+        if (!post) return res.status(404).json({ error: 'Not found' });
 
-        res.status(200);
+        await post.destroy();
+
+        res.status(204);
     } catch (e) {
         res.status(500).json({
             error: e.message
