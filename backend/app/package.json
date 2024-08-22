@@ -19,6 +19,7 @@
         "morgan": "^1.10.0",
         "mysql2": "^3.11.0",
         "passport": "^0.7.0",
+        "passport-jwt": "^4.0.1",
         "sequelize": "^6.37.3",
         "yenv": "^2.1.1"
     },

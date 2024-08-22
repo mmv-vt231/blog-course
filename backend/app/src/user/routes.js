@@ -7,6 +7,10 @@ router.post("/signup", (req, res) => {
     controller.createUser(req, res);
 })
 
+router.post("/login", (req, res) => {
+    controller.login(req, res);
+})
+
 router.get("/", (req, res) => {
     controller.getUserList(req, res);
 })
