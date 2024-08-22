@@ -1,3 +1,5 @@
+const passport = require("passport");
+
 const post = require("../src/post/routes");
 const tag = require("../src/tag/routes");
 const like = require("../src/like/routes");
@@ -7,11 +9,11 @@ const comment = require("../src/comment/routes");
 
 module.exports = (app) => {
     app.use("/post", post);
-    app.use("/tag", tag);
-    app.use("/like", like);
-    app.use("/role", role);
-    app.use("/user", user); 
-    app.use("/comment", comment);
+    app.use("/user", user);
+    app.use("/tag", passport.authenticate('jwt', { session: false }), tag);
+    app.use("/like", passport.authenticate('jwt', { session: false }), like);
+    app.use("/role", passport.authenticate('jwt', { session: false }), role);
+    app.use("/comment", passport.authenticate('jwt', { session: false }), comment);
 
     app.use("*", (req, res) => {
         res.status(404).send("Not Found");
