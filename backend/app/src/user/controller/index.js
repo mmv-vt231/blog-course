@@ -1,4 +1,6 @@
 const User = require("./../../../models/User");
+const jwt = require("jsonwebtoken");
+const bcryptjs = require("bcryptjs");
 
 module.exports.getUserList = async (req, res) => {
     try {
@@ -38,10 +40,12 @@ module.exports.createUser = async (req, res) => {
             });
         }
 
+        const hashedPassword = bcryptjs.hashSync(password, 10);
+
         const user = await User.create({
             email,
             nickname,
-            password,
+            password: hashedPassword,
             role_id,
             allowed_notifications: 0
         })
