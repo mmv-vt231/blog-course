@@ -35,6 +35,38 @@ module.exports.login = async (req, res) => {
     }
 }
 
+module.exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if(!currentPassword || !newPassword) {
+            return res.status(400).json({
+                error: "Bad request!"
+            });
+        }
+
+        const user = await User.findByPk(req.user.id);
+
+        if (!user) return res.status(404).json({ error: 'Not found' });
+
+        const isMatchPassword = bcrypt.compareSync(currentPassword, user.password);
+
+        if (!isMatchPassword) {
+            return res.status(401).json({ error: "Invalid password" });
+        }
+
+        user.password = bcrypt.hashSync(newPassword, 10);
+
+        await user.save();
+
+        res.status(200);
+    } catch (e) {
+        res.status(500).json({
+            error: e.message
+        })
+    }
+}
+
 module.exports.getUserList = async (req, res) => {
     try {
         const tags = await User.findAll();

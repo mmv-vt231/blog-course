@@ -13,6 +13,10 @@ router.post("/login", (req, res) => {
     controller.login(req, res);
 })
 
+router.post("/change-password", passport.authenticate('jwt', { session: false }), (req, res) => {
+    controller.changePassword(req, res);
+})
+
 router.get("/", passport.authenticate('jwt', { session: false }), (req, res) => {
     controller.getUserList(req, res);
 })
