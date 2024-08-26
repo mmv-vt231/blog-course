@@ -1,4 +1,5 @@
 const Post = require("./../../../models/Post");
+const Comment = require("./../../../models/Comment");
 
 module.exports.getPostList = async (req, res) => {
     try {
@@ -21,6 +22,28 @@ module.exports.getPost = async (req, res) => {
         if (!post) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(post);
+    } catch (e) {
+        res.status(500).json({
+            error: e.message
+        })
+    }
+}
+
+module.exports.getComments = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const post = await Post.findByPk(postId);
+
+        if (!post) return res.status(404).json({ error: 'Not found' });
+
+        const comments = await Comment.findAll({
+            where: {
+                post_id: postId
+            }
+        });
+
+        res.status(200).json(comments);
     } catch (e) {
         res.status(500).json({
             error: e.message

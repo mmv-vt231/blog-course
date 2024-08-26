@@ -13,6 +13,10 @@ router.get("/:id", (req, res) => {
     controller.getPost(req, res);
 })
 
+router.get("/:id/comments", (req, res) => {
+    controller.getComments(req, res);
+})
+
 router.post("/", passport.authenticate('jwt', { session: false }), (req, res) => {
     controller.createPost(req, res);
 })
