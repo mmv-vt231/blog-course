@@ -10,7 +10,7 @@ const comment = require("../src/comment/routes");
 module.exports = (app) => {
     app.use("/post", post);
     app.use("/user", user);
-    app.use("/tag", passport.authenticate('jwt', { session: false }), tag);
+    app.use("/tag", tag);
     app.use("/like", passport.authenticate('jwt', { session: false }), like);
     app.use("/role", passport.authenticate('jwt', { session: false }), role);
     app.use("/comment", comment);
