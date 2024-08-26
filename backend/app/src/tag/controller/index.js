@@ -1,4 +1,5 @@
 const Tag = require("./../../../models/Tag");
+const Post = require("./../../../models/Post");
 
 module.exports.getTagList = async (req, res) => {
     try {
@@ -21,6 +22,28 @@ module.exports.getTag = async (req, res) => {
         if (!tag) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(tag);
+    } catch (e) {
+        res.status(500).json({
+            error: e.message
+        })
+    }
+}
+
+module.exports.getPosts = async (req, res) => {
+    try {
+        const tagId = req.params.id;
+
+        const tag = await Tag.findByPk(tagId);
+
+        if (!tag) return res.status(404).json({ error: 'Not found' });
+
+        const posts = Post.findAll({
+            where: {
+                tag_id: tagId
+            }
+        });
+
+        res.status(200).json(posts);
     } catch (e) {
         res.status(500).json({
             error: e.message
