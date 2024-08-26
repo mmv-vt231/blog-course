@@ -28,6 +28,28 @@ module.exports.getComment = async (req, res) => {
     }
 }
 
+module.exports.getReplies = async (req, res) => {
+    try {
+        const commentId = req.params.id;
+
+        const comment = await Comment.findByPk(commentId);
+
+        if (!comment) return res.status(404).json({ error: 'Not found' });
+
+        const comments = await Comment.findAll({
+            where: {
+                parent_id: commentId
+            }
+        });
+
+        res.status(200).json(comments);
+    } catch (e) {
+        res.status(500).json({
+            error: e.message
+        })
+    }
+}
+
 module.exports.createComment = async (req, res) => {
     try {
         const {user_id, post_id, content} = req.body;

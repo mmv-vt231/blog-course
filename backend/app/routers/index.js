@@ -13,7 +13,7 @@ module.exports = (app) => {
     app.use("/tag", passport.authenticate('jwt', { session: false }), tag);
     app.use("/like", passport.authenticate('jwt', { session: false }), like);
     app.use("/role", passport.authenticate('jwt', { session: false }), role);
-    app.use("/comment", passport.authenticate('jwt', { session: false }), comment);
+    app.use("/comment", comment);
 
     app.use("*", (req, res) => {
         res.status(404).send("Not Found");
