@@ -53,6 +53,28 @@ module.exports.getComments = async (req, res) => {
     }
 }
 
+module.exports.getRelated = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const post = await Post.findByPk(postId);
+
+        if (!post) return res.status(404).json({ error: 'Not found' });
+
+        const posts = Post.findAll({
+            where: {
+                tag_id: post.tag_id
+            }
+        });
+
+        res.status(200).json(posts);
+    } catch (e) {
+        res.status(500).json({
+            error: e.message
+        })
+    }
+}
+
 module.exports.searchPost = async (req, res) => {
     try {
         const {query} = req.body;

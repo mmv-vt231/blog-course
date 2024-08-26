@@ -17,6 +17,10 @@ router.get("/:id/comments", (req, res) => {
     controller.getComments(req, res);
 })
 
+router.get("/:id/related", (req, res) => {
+    controller.getRelated(req, res);
+})
+
 router.post("/search", (req, res) => {
     controller.searchPost(req, res);
 })
