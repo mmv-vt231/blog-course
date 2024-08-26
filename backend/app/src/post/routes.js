@@ -17,6 +17,10 @@ router.get("/:id/comments", (req, res) => {
     controller.getComments(req, res);
 })
 
+router.post("/search", (req, res) => {
+    controller.searchPost(req, res);
+})
+
 router.post("/", passport.authenticate('jwt', { session: false }), (req, res) => {
     controller.createPost(req, res);
 })

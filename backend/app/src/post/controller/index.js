@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const Post = require("./../../../models/Post");
 const Comment = require("./../../../models/Comment");
 
@@ -44,6 +46,32 @@ module.exports.getComments = async (req, res) => {
         });
 
         res.status(200).json(comments);
+    } catch (e) {
+        res.status(500).json({
+            error: e.message
+        })
+    }
+}
+
+module.exports.searchPost = async (req, res) => {
+    try {
+        const {query} = req.body;
+
+        if(!query) {
+            return res.status(400).json({
+                error: "Bad request!"
+            });
+        }
+
+        const posts = await Post.findAll({
+            where: {
+                title: {
+                    [Op.like]: `%${query}%`,
+                }
+            }
+        });
+
+        res.status(200).json(posts);
     } catch (e) {
         res.status(500).json({
             error: e.message
