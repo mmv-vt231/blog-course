@@ -21,6 +21,9 @@ router.get("/:id", passport.authenticate('jwt', { session: false }), (req, res) 
     controller.getUser(req, res);
 })
 
+router.get("/search", passport.authenticate('jwt', { session: false }), (req, res) => {
+    controller.searchUser(req, res);
+})
 
 router.put("/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
     controller.updateUser(req, res);

@@ -1,6 +1,7 @@
 const User = require("./../../../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const Post = require("../../../models/Post");
 
 module.exports.login = async (req, res) => {
     try {
@@ -56,6 +57,32 @@ module.exports.getUser = async (req, res) => {
         if (!user) return res.status(404).json({ error: 'Not found' });
 
         res.status(200).json(user);
+    } catch (e) {
+        res.status(500).json({
+            error: e.message
+        })
+    }
+}
+
+module.exports.searchUser = async (req, res) => {
+    try {
+        const {query} = req.body;
+
+        if(!query) {
+            return res.status(400).json({
+                error: "Bad request!"
+            });
+        }
+
+        const users = await User.findAll({
+            where: {
+                title: {
+                    [Op.like]: `%${query}%`,
+                }
+            }
+        });
+
+        res.status(200).json(users);
     } catch (e) {
         res.status(500).json({
             error: e.message
