@@ -9,14 +9,13 @@ import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export default function SignUp() {
+export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -27,17 +26,17 @@ export default function SignUp() {
 
         const data = {
             email: formData.get("email"),
-            nickname: formData.get("nickname"),
             password: formData.get("password"),
-            role_id: "c2b7770a-60c9-11ef-85c7-0242ac140002"
         }
 
         setError(null);
         setLoading(true);
 
-        request("user/signup", "POST", data)
-            .then(() => {
-                window.location.href = "/user/login";
+        request("user/login", "POST", data)
+            .then((result) => {
+                localStorage.setItem("token", result.token);
+
+                window.location.href = "/user/list";
             })
             .catch((err) => {
                 setError(err.error);
@@ -51,14 +50,10 @@ export default function SignUp() {
         <div className="grid place-items-center min-h-dvh">
             <Card className="mx-auto w-full max-w-sm">
                 <CardHeader>
-                    <CardTitle className="text-center text-2xl">Sign Up</CardTitle>
+                    <CardTitle className="text-center text-2xl">Login</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="nickname">Nickname</Label>
-                            <Input id="nickname" name="nickname" type="text" required/>
-                        </div>
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input id="email" name="email" type="email" required/>
@@ -68,14 +63,14 @@ export default function SignUp() {
                             <Input id="password" name="password" type="password" required/>
                         </div>
                         {error && <div className="text-sm text-red-500">{error}</div>}
-                        <Button disbled={loading} type="submit" className="w-full">
-                            Create an account
+                        <Button disbled={loading.toString()} type="submit" className="w-full">
+                            Sign in
                         </Button>
                     </form>
                     <div className="mt-4 text-center text-sm">
-                        Already have an account?{" "}
-                        <Link href="/user/login" className="underline">
-                            Sign in
+                        Don't have an account?{" "}
+                        <Link href="/user/signup" className="underline">
+                            Sign up
                         </Link>
                     </div>
                 </CardContent>
