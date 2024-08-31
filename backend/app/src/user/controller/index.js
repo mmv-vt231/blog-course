@@ -1,6 +1,7 @@
-const User = require("./../../../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
+const User = require("./../../../models/User");
 
 module.exports.login = async (req, res) => {
     try {
@@ -128,6 +129,22 @@ module.exports.createUser = async (req, res) => {
         if(!email || !nickname || !password || !role_id) {
             return res.status(400).json({
                 error: "Bad request!"
+            });
+        }
+
+        const userWithNickname = await User.findOne({ where: { nickname } });
+
+        if(userWithNickname) {
+            return res.status(400).json({
+                error: "User with this nickname already registered!"
+            });
+        }
+
+        const userWithEmail = await User.findOne({ where: { email } });
+
+        if(userWithEmail) {
+            return res.status(400).json({
+                error: "User with this email already registered!"
             });
         }
 
