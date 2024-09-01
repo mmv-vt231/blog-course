@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const User = require("./../../../models/User");
+const Role = require("./../../../models/Role");
 
 module.exports.login = async (req, res) => {
     try {
@@ -70,9 +71,14 @@ module.exports.changePassword = async (req, res) => {
 
 module.exports.getUserList = async (req, res) => {
     try {
-        const tags = await User.findAll();
+        const users = await User.findAll({
+            attributes: {
+                exclude: ["password", "role_id"]
+            },
+            include: Role
+        });
 
-        res.status(200).json(tags);
+        res.status(200).json(users);
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -84,7 +90,12 @@ module.exports.getUser = async (req, res) => {
     try {
         const userId = req.params.id;
 
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(userId, {
+            attributes: {
+                exclude: ["password", "role_id"]
+            },
+            include: Role
+        });
 
         if (!user) return res.status(404).json({ error: 'Not found' });
 
@@ -107,6 +118,9 @@ module.exports.searchUser = async (req, res) => {
         }
 
         const users = await User.findAll({
+            attributes: {
+                exclude: ["password"]
+            },
             where: {
                 title: {
                     [Op.like]: `%${query}%`,
@@ -124,9 +138,9 @@ module.exports.searchUser = async (req, res) => {
 
 module.exports.createUser = async (req, res) => {
     try {
-        const {email, nickname, password, role_id} = req.body;
+        const {email, nickname, password} = req.body;
 
-        if(!email || !nickname || !password || !role_id) {
+        if(!email || !nickname || !password) {
             return res.status(400).json({
                 error: "Bad request!"
             });
@@ -150,15 +164,15 @@ module.exports.createUser = async (req, res) => {
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-        const user = await User.create({
+        await User.create({
             email,
             nickname,
             password: hashedPassword,
-            role_id,
+            role_id: "c2b7770a-60c9-11ef-85c7-0242ac140002",
             allowed_notifications: 0
         })
 
-        res.status(201).json(user);
+        res.status(201);
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -171,7 +185,11 @@ module.exports.updateUser = async (req, res) => {
         const userId = req.params.id;
         const { role_id, email, nickname, allowed_notifications, } = req.body;
 
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(userId, {
+            attributes: {
+                exclude: ["password"]
+            },
+        });
 
         if (!user) return res.status(404).json({ error: 'Not found' });
 
