@@ -17,7 +17,7 @@ const Tag = sequelize.define(
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         }
     }
 );

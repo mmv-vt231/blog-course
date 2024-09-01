@@ -15,12 +15,12 @@ const Role = sequelize.define(
             type: DataTypes.STRING(255),
             allowNull: false,
         },
-        created_at: {
-            type: 'TIMESTAMP',
-            defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-            allowNull: false
-        }
     },
+    {
+        timestamps: true,
+        createdAt: "created_at",
+        updatedAt: false,
+    }
 );
 
 Role.hasMany(User, {onDelete: "SET NULL", foreignKey: "role_id", sourceKey: "id"});
