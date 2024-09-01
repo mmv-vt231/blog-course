@@ -14,7 +14,7 @@ import {
 import {Button} from "@/components/ui/button";
 
 import {request} from "@/utils/request";
-import {useList} from "../context/ListContext";
+import {useList} from "@/context/ListContext";
 
 export default function DeleteDialog({ roleId }) {
     const [open, setOpen] = useState(false);

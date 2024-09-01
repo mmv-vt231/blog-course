@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label"
 
 import {request} from "@/utils/request";
 
-export default function SignUp() {
+export default function Page() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

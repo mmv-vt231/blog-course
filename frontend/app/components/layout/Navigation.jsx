@@ -13,6 +13,10 @@ const links = [
     {
         href: "/role/list",
         label: "Roles"
+    },
+    {
+        href: "/tag/list",
+        label: "Tags"
     }
 ]
 
@@ -25,7 +29,7 @@ export default function Navigation() {
                 {links.map(({href, label}) => {
                     const classes = pathname === href ? "bg-gray-100" : "";
 
-                    return <Button className={classes} variant="ghost" asChild>
+                    return <Button key={href} className={classes} variant="ghost" asChild>
                         <Link href={href}>{label}</Link>
                     </Button>;
                 })}

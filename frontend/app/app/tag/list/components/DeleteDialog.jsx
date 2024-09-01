@@ -16,17 +16,17 @@ import {Button} from "@/components/ui/button";
 import {request} from "@/utils/request";
 import {useList} from "@/context/ListContext";
 
-export default function DeleteDialog({ userId }) {
+export default function DeleteDialog({ tagId }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const {setUsers} = useList();
+    const {setTags} = useList();
 
     const handleDelete = () => {
         setLoading(true);
 
-        request(`user/${userId}`, "DELETE")
+        request(`tag/${tagId}`, "DELETE")
             .then(() => {
-                setUsers(prevData => prevData.filter(user => user.id !== userId));
+                setTags(prevData => prevData.filter(tag => tag.id !== tagId));
 
                 setOpen(false);
             })
@@ -45,7 +45,7 @@ export default function DeleteDialog({ userId }) {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Confirm</DialogTitle>
-                    <DialogDescription>Are you sure you want to delete this user?</DialogDescription>
+                    <DialogDescription>Are you sure you want to delete this tag?</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <Button onClick={handleDelete} disabled={loading} type="submit">Delete</Button>

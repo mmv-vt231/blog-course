@@ -19,9 +19,9 @@ import {
 import TableItem from "./components/TableItem";
 
 import {request} from "@/utils/request";
-import {ListProvider} from "./context/ListContext";
+import {ListProvider} from "@/context/ListContext";
 
-export default function UserList() {
+export default function Page() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

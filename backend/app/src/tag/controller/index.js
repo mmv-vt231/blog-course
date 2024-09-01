@@ -106,7 +106,7 @@ module.exports.deleteTag = async (req, res) => {
 
         await tag.destroy();
 
-        res.status(204);
+        res.status(200).json({ id: tagId });
     } catch (e) {
         res.status(500).json({
             error: e.message

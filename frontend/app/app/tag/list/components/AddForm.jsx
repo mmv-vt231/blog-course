@@ -23,7 +23,7 @@ export default function AddForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const {setRoles} = useList();
+    const {setTags} = useList();
 
     const handleAdd = (e) => {
         e.preventDefault();
@@ -32,14 +32,15 @@ export default function AddForm() {
 
         const data = {
             name: formData.get("name"),
+            icon_path: formData.get("icon"),
         }
 
         setError(null);
         setLoading(true);
 
-        request(`role`, "POST", data)
+        request(`tag`, "POST", data)
             .then((result) => {
-                setRoles(prevData => [...prevData, result]);
+                setTags(prevData => [...prevData, result]);
 
                 setOpen(false);
             })
@@ -60,16 +61,20 @@ export default function AddForm() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add role</DialogTitle>
+                    <DialogTitle>Add tag</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleAdd} className="grid gap-4">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Name</Label>
                         <Input id="name" name="name" type="text" required/>
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="icon">Icon</Label>
+                        <Input id="icon" name="icon" type="text" required/>
+                    </div>
                     {error && <div className="text-sm text-red-500">{error}</div>}
                     <DialogFooter>
-                        <Button disabled={loading} type="submit">Create role</Button>
+                        <Button disabled={loading} type="submit">Create tag</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

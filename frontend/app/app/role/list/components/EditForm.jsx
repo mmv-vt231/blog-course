@@ -16,7 +16,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 
 import {request} from "@/utils/request";
-import {useList} from "../context/ListContext";
+import {useList} from "@/context/ListContext";
 
 export default function EditForm({ role }) {
     const [open, setOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function EditForm({ role }) {
 
         request(`role/${id}`, "PUT", data)
             .then((result) => {
-                setRoles(prevData => prevData.map(role => role.id === result.id
+                setRoles(prevData => prevData.map(role => role.id === id
                     ? {...role, ...result}
                     : role
                 ));

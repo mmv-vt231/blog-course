@@ -23,7 +23,7 @@ import {request} from "@/utils/request";
 import {ListProvider} from "@/context/ListContext";
 
 export default function Page() {
-    const [roles, setRoles] = useState([]);
+    const [tags, setTags] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -31,9 +31,9 @@ export default function Page() {
         setError(null);
         setLoading(true);
 
-        request("role", "GET")
+        request("tag", "GET")
             .then((result) => {
-                setRoles(result);
+                setTags(result);
             })
             .catch((err) => {
                 setError(err.error);
@@ -44,11 +44,11 @@ export default function Page() {
     }, []);
 
     return (
-        <ListProvider value={{roles, setRoles}}>
+        <ListProvider value={{tags, setTags}}>
             <div className="grid place-items-center p-4">
                 <Card className="mx-auto w-full max-w-6xl">
                     <CardHeader className="space-y-0 flex flex-row align-center justify-between p-6">
-                        <CardTitle className="text-2xl">Role list</CardTitle>
+                        <CardTitle className="text-2xl">Tag list</CardTitle>
                         <AddForm/>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
@@ -60,7 +60,7 @@ export default function Page() {
                                         <TableRow>
                                             <TableHead>Id</TableHead>
                                             <TableHead>Name</TableHead>
-                                            <TableHead>Created at</TableHead>
+                                            <TableHead>Icon</TableHead>
                                             <TableHead className="text-center">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -70,7 +70,7 @@ export default function Page() {
                                                 <LoaderCircle className="animate-spin mx-auto"/>
                                             </TableCell>
                                         </TableRow>}
-                                        {roles.map(role => <TableItem role={role} key={role.id} />)}
+                                        {tags.map(tag => <TableItem tag={tag} key={tag.id} />)}
                                     </TableBody>
                                 </Table>
                             )

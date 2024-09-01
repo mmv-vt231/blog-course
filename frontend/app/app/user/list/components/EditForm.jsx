@@ -24,7 +24,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 
 import {request} from "@/utils/request";
-import {useList} from "../context/ListContext";
+import {useList} from "@/context/ListContext";
 import {toFirstUpperCase} from "@/utils/toFirstUpperCase";
 
 export default function EditForm({ user }) {
