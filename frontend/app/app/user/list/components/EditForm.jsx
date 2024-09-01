@@ -1,6 +1,6 @@
 'use client'
 
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import { Pencil } from "lucide-react"
 
 import {
@@ -11,20 +11,38 @@ import {
     DialogTrigger,
     DialogFooter
 } from "@/components/ui/dialog"
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 
 import {request} from "@/utils/request";
 import {useList} from "../context/ListContext";
+import {toFirstUpperCase} from "@/utils/toFirstUpperCase";
 
 export default function EditForm({ user }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [roles, setRoles] = useState([]);
+
     const {setUsers} = useList();
 
-    const {id, nickname, email} = user;
+    const {id, nickname, email, role} = user;
+
+    useEffect(() => {
+        request("role", "GET")
+            .then((result) => {
+                setRoles(result);
+            })
+    }, []);
 
     const handleEdit = (e) => {
         e.preventDefault();
@@ -34,6 +52,7 @@ export default function EditForm({ user }) {
         const data = {
             email: formData.get("email"),
             nickname: formData.get("nickname"),
+            role_id: formData.get("role")
         }
 
         setError(null);
@@ -41,10 +60,8 @@ export default function EditForm({ user }) {
 
         request(`user/${id}`, "PUT", data)
             .then((result) => {
-                const { id, nickname, email } = result;
-
-                setUsers(prevData => prevData.map(user => user.id === id
-                    ? {id, nickname, email}
+                setUsers(prevData => prevData.map(user => user.id === result.id
+                    ? {...user, ...result}
                     : user
                 ));
 
@@ -77,6 +94,21 @@ export default function EditForm({ user }) {
                     <div className="grid gap-2">
                         <Label htmlFor="nickname">Nickname</Label>
                         <Input id="nickname" name="nickname" type="text" defaultValue={nickname} required/>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="nickname">Roles</Label>
+                        <Select name="role" defaultValue={role.id}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {roles.map(({id, name}) => (
+                                        <SelectItem key={id} value={id}>{toFirstUpperCase(name)}</SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
                     {error && <div className="text-sm text-red-500">{error}</div>}
                     <DialogFooter>

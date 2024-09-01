@@ -185,11 +185,7 @@ module.exports.updateUser = async (req, res) => {
         const userId = req.params.id;
         const { role_id, email, nickname, allowed_notifications, } = req.body;
 
-        const user = await User.findByPk(userId, {
-            attributes: {
-                exclude: ["password"]
-            },
-        });
+        const user = await User.findByPk(userId);
 
         if (!user) return res.status(404).json({ error: 'Not found' });
 
@@ -200,7 +196,14 @@ module.exports.updateUser = async (req, res) => {
 
         await user.save();
 
-        res.status(200).json(user);
+        const newUser = await User.findByPk(userId, {
+            attributes: {
+              exclude: ["password", "role_id"]
+            },
+            include: Role
+        });
+
+        res.status(200).json(newUser);
     } catch (e) {
         res.status(500).json({
             error: e.message

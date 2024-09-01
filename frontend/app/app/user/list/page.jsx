@@ -59,13 +59,14 @@ export default function UserList() {
                                             <TableHead>Id</TableHead>
                                             <TableHead>Nickname</TableHead>
                                             <TableHead>Email</TableHead>
+                                            <TableHead>Role</TableHead>
                                             <TableHead>Created at</TableHead>
                                             <TableHead className="text-center">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {loading && <TableRow>
-                                            <TableCell colSpan={4}>
+                                            <TableCell colSpan={6}>
                                                 <LoaderCircle className="animate-spin mx-auto"/>
                                             </TableCell>
                                         </TableRow>}
