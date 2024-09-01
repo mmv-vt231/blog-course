@@ -10,22 +10,29 @@ export const request = async (path, method, body) => {
         body: JSON.stringify(body)
     });
 
-    const data = await response.json();
-
     if(!response.ok) {
         const contentType = response.headers.get('Content-Type')
 
         if (contentType && contentType.includes('application/json')) {
-            const errorData = {
+            const {error} = await response.json();
+
+            return Promise.reject({
                 message: response.statusText,
                 statusCode: response.status,
-                error: data?.error,
-            }
-            return Promise.reject(errorData);
+                error
+            });
         }
 
-        throw new Error(`Something went wrong!`);
+        if(response.status === 401) {
+            window.location.href = "/user/login";
+        }
+
+        return Promise.reject({
+            message: "Unknown error",
+            statusCode: 500,
+            error: "Something went wrong",
+        });
     }
 
-    return data;
+    return await response.json();
 }
