@@ -22,7 +22,7 @@ const Tag = sequelize.define(
     }
 );
 
-Tag.hasMany(Post, {foreignKey: "tag_id", sourceKey: "id"});
+Tag.hasMany(Post, {onDelete: "SET NULL", foreignKey: "tag_id", sourceKey: "id"});
 Post.belongsTo(Tag, {foreignKey: "tag_id", sourceKey: "id"});
 
 (async () => {

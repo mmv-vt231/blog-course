@@ -1,11 +1,15 @@
 const { Op } = require('sequelize');
 
 const Post = require("./../../../models/Post");
+const Tag = require("./../../../models/Tag");
 const Comment = require("./../../../models/Comment");
 
 module.exports.getPostList = async (req, res) => {
     try {
-        const posts = await Post.findAll();
+        const posts = await Post.findAll({
+            include: Tag,
+            exclude: ["tag_id"]
+        });
 
         res.status(200).json(posts);
     } catch (e) {
@@ -19,7 +23,10 @@ module.exports.getPost = async (req, res) => {
     try {
         const postId = req.params.id;
 
-        const post = await Post.findByPk(postId);
+        const post = await Post.findByPk(postId, {
+            include: Tag,
+            exclude: ["tag_id"]
+        });
 
         if (!post) return res.status(404).json({ error: 'Not found' });
 
@@ -103,9 +110,9 @@ module.exports.searchPost = async (req, res) => {
 
 module.exports.createPost = async (req, res) => {
     try {
-        const {title, content, short_description, is_private} = req.body;
+        const {title, content, short_description, tag_id, is_private} = req.body;
 
-        if(!title || !content || !short_description || is_private === undefined) {
+        if(!title || !content || !short_description || !tag_id || is_private === undefined) {
             return res.status(400).json({
                 error: "Bad request!"
             });
@@ -115,7 +122,11 @@ module.exports.createPost = async (req, res) => {
             title,
             content,
             short_description,
+            tag_id,
             is_private
+        }, {
+            include: Tag,
+            exclude: ["tag_id"]
         })
 
         res.status(201).json(post);
@@ -142,7 +153,12 @@ module.exports.updatePost = async (req, res) => {
 
         await post.save();
 
-        res.status(200).json(post);
+        const updatedPost = await Post.findByPk(postId, {
+            include: Tag,
+            exclude: ["tag_id"]
+        });
+
+        res.status(200).json(updatedPost);
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -160,7 +176,7 @@ module.exports.deletePost = async (req, res) => {
 
         await post.destroy();
 
-        res.status(204);
+        res.status(200).json({ id: postId });
     } catch (e) {
         res.status(500).json({
             error: e.message

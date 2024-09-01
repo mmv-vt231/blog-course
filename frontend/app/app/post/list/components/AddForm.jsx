@@ -1,7 +1,7 @@
 'use client'
 
 import {useState, useEffect} from 'react'
-import { Pencil } from "lucide-react"
+import { Plus } from "lucide-react"
 
 import {
     Dialog,
@@ -11,59 +11,51 @@ import {
     DialogTrigger,
     DialogFooter
 } from "@/components/ui/dialog"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {Switch} from "@/components/ui/switch";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 import {request} from "@/utils/request";
 import {useList} from "@/context/ListContext";
 import {toFirstUpperCase} from "@/utils/toFirstUpperCase";
 
-export default function EditForm({ user }) {
+export default function AddForm() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [roles, setRoles] = useState([]);
+    const [tags, setTags] = useState([]);
 
-    const {setUsers} = useList();
-
-    const {id, nickname, email, role} = user;
+    const {setPosts} = useList();
 
     useEffect(() => {
-        request("role", "GET")
+        request("tag", "GET")
             .then((result) => {
-                setRoles(result);
+                setTags(result);
             })
     }, []);
 
-    const handleEdit = (e) => {
+    const handleAdd = (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
 
         const data = {
-            email: formData.get("email"),
-            nickname: formData.get("nickname"),
-            role_id: formData.get("role")
+            title: formData.get("title"),
+            content: formData.get("content"),
+            tag_id: formData.get("tag"),
+            short_description: formData.get("short_description"),
+            is_private: !!formData.get("is_private"),
         }
 
         setError(null);
         setLoading(true);
 
-        request(`user/${id}`, "PUT", data)
+        request(`post`, "POST", data)
             .then((result) => {
-                setUsers(prevData => prevData.map(user => user.id === result.id
-                    ? {...user, ...result}
-                    : user
-                ));
+                setPosts(prevData => [...prevData, result]);
 
                 setOpen(false);
             })
@@ -74,45 +66,53 @@ export default function EditForm({ user }) {
                 setLoading(false);
             });
     }
-    
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="h-8 w-8 p-0 hover:bg-gray-100" variant="ghost">
-                    <Pencil className="w-4 h-4"/>
+                <Button>
+                    <Plus className="w-4 h-4 mr-2"/> Add
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Edit user</DialogTitle>
+                    <DialogTitle>Add post</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleEdit} className="grid gap-4">
+                <form onSubmit={handleAdd} className="grid gap-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" defaultValue={email} required/>
+                        <Label htmlFor="title">Title</Label>
+                        <Input id="title" name="title" type="text" required/>
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="nickname">Nickname</Label>
-                        <Input id="nickname" name="nickname" type="text" defaultValue={nickname} required/>
+                        <Label htmlFor="short_description">Short description</Label>
+                        <Input id="short_description" name="short_description" type="text" required/>
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="role">Roles</Label>
-                        <Select name="role" defaultValue={role?.id}>
+                        <Label htmlFor="content">Content</Label>
+                        <Textarea id="content" name="content" type="text" required/>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="tag">Tag</Label>
+                        <Select name="tag">
                             <SelectTrigger>
-                                <SelectValue placeholder="Select role" />
+                                <SelectValue placeholder="Select tag" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    {roles.map(({id, name}) => (
+                                    {tags.map(({id, name}) => (
                                         <SelectItem key={id} value={id}>{toFirstUpperCase(name)}</SelectItem>
                                     ))}
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="is_private">Private</Label>
+                        <Switch id="is_private" name="is_private" />
+                    </div>
                     {error && <div className="text-sm text-red-500">{error}</div>}
                     <DialogFooter>
-                        <Button disabled={loading} type="submit">Save changes</Button>
+                        <Button disabled={loading} type="submit">Create post</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

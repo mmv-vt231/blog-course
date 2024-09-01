@@ -17,6 +17,10 @@ const links = [
     {
         href: "/tag/list",
         label: "Tags"
+    },
+    {
+        href: "/post/list",
+        label: "Posts"
     }
 ]
 
