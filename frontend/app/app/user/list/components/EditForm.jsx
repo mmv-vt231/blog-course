@@ -97,7 +97,7 @@ export default function EditForm({ user }) {
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="nickname">Roles</Label>
-                        <Select name="role" defaultValue={role.id}>
+                        <Select name="role" defaultValue={role?.id}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select role" />
                             </SelectTrigger>

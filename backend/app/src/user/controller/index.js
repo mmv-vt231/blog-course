@@ -164,15 +164,15 @@ module.exports.createUser = async (req, res) => {
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-        await User.create({
+        const user = await User.create({
             email,
             nickname,
             password: hashedPassword,
-            role_id: "c2b7770a-60c9-11ef-85c7-0242ac140002",
+            role_id: "1ff86592-6861-11ef-b088-0242ac140002",
             allowed_notifications: 0
         })
 
-        res.status(201);
+        res.status(201).json({ id: user.id });
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -221,7 +221,7 @@ module.exports.deleteUser = async (req, res) => {
 
         await user.destroy();
 
-        res.status(204);
+        res.status(200).json({ id: userId });
     } catch (e) {
         res.status(500).json({
             error: e.message

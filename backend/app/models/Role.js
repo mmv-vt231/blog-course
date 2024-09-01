@@ -23,7 +23,7 @@ const Role = sequelize.define(
     },
 );
 
-Role.hasMany(User, {foreignKey: "role_id", sourceKey: "id"});
+Role.hasMany(User, {onDelete: "SET NULL", foreignKey: "role_id", sourceKey: "id"});
 User.belongsTo(Role, {foreignKey: "role_id", sourceKey: "id"});
 
 (async () => {

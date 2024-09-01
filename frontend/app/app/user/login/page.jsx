@@ -63,7 +63,7 @@ export default function Login() {
                             <Input id="password" name="password" type="password" required/>
                         </div>
                         {error && <div className="text-sm text-red-500">{error}</div>}
-                        <Button disbled={loading.toString()} type="submit" className="w-full">
+                        <Button disabled={loading} type="submit" className="w-full">
                             Sign in
                         </Button>
                     </form>

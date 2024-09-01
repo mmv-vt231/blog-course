@@ -1,22 +1,23 @@
 'use client'
 
 import {useState} from 'react'
-import {request} from "@/utils/request";
-
 import Link from "next/link"
+import { useRouter } from 'next/navigation'
 
 import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import {request} from "@/utils/request";
+
 export default function SignUp() {
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -29,7 +30,6 @@ export default function SignUp() {
             email: formData.get("email"),
             nickname: formData.get("nickname"),
             password: formData.get("password"),
-            role_id: "c2b7770a-60c9-11ef-85c7-0242ac140002"
         }
 
         setError(null);
@@ -37,7 +37,7 @@ export default function SignUp() {
 
         request("user/signup", "POST", data)
             .then(() => {
-                window.location.href = "/user/login";
+                router.push("/user/login");
             })
             .catch((err) => {
                 setError(err.error);
@@ -68,7 +68,7 @@ export default function SignUp() {
                             <Input id="password" name="password" type="password" required/>
                         </div>
                         {error && <div className="text-sm text-red-500">{error}</div>}
-                        <Button disbled={loading} type="submit" className="w-full">
+                        <Button disabled={loading} type="submit" className="w-full">
                             Create an account
                         </Button>
                     </form>

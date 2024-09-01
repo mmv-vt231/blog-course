@@ -17,12 +17,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import TableItem from "./components/TableItem";
+import AddForm from "@/app/role/list/components/AddForm";
 
 import {request} from "@/utils/request";
 import {ListProvider} from "./context/ListContext";
 
 export default function UserList() {
-    const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -30,9 +31,9 @@ export default function UserList() {
         setError(null);
         setLoading(true);
 
-        request("user", "GET")
+        request("role", "GET")
             .then((result) => {
-                setUsers(result);
+                setRoles(result);
             })
             .catch((err) => {
                 setError(err.error);
@@ -42,14 +43,13 @@ export default function UserList() {
             });
     }, []);
 
-    console.log(users);
-
     return (
-        <ListProvider value={{users, setUsers}}>
+        <ListProvider value={{roles: roles, setRoles: setRoles}}>
             <div className="grid place-items-center p-4">
                 <Card className="mx-auto w-full max-w-6xl">
                     <CardHeader className="space-y-0 flex flex-row align-center justify-between p-6">
-                        <CardTitle className="text-2xl">User list</CardTitle>
+                        <CardTitle className="text-2xl">Role list</CardTitle>
+                        <AddForm/>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
                         {error
@@ -59,9 +59,7 @@ export default function UserList() {
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead>Id</TableHead>
-                                            <TableHead>Nickname</TableHead>
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Role</TableHead>
+                                            <TableHead>Name</TableHead>
                                             <TableHead>Created at</TableHead>
                                             <TableHead className="text-center">Action</TableHead>
                                         </TableRow>
@@ -72,7 +70,7 @@ export default function UserList() {
                                                 <LoaderCircle className="animate-spin mx-auto"/>
                                             </TableCell>
                                         </TableRow>}
-                                        {users.map(user => <TableItem user={user} key={user.id} />)}
+                                        {roles.map(role => <TableItem role={role} key={role.id} />)}
                                     </TableBody>
                                 </Table>
                             )

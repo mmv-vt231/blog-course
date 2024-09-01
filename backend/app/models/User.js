@@ -31,7 +31,7 @@ const User = sequelize.define(
     },
     role_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
     allowed_notifications: {
       type: DataTypes.TINYINT,

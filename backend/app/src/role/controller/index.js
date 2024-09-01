@@ -81,7 +81,7 @@ module.exports.deleteRole = async (req, res) => {
 
         await role.destroy();
 
-        res.status(204);
+        res.status(200).json({ id: roleId });
     } catch (e) {
         res.status(500).json({
             error: e.message
