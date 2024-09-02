@@ -1,6 +1,8 @@
-const User = require("./../../../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
+const User = require("./../../../models/User");
+const Role = require("./../../../models/Role");
 
 module.exports.login = async (req, res) => {
     try {
@@ -69,9 +71,14 @@ module.exports.changePassword = async (req, res) => {
 
 module.exports.getUserList = async (req, res) => {
     try {
-        const tags = await User.findAll();
+        const users = await User.findAll({
+            attributes: {
+                exclude: ["password", "role_id"]
+            },
+            include: Role
+        });
 
-        res.status(200).json(tags);
+        res.status(200).json(users);
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -83,7 +90,12 @@ module.exports.getUser = async (req, res) => {
     try {
         const userId = req.params.id;
 
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(userId, {
+            attributes: {
+                exclude: ["password", "role_id"]
+            },
+            include: Role
+        });
 
         if (!user) return res.status(404).json({ error: 'Not found' });
 
@@ -106,6 +118,9 @@ module.exports.searchUser = async (req, res) => {
         }
 
         const users = await User.findAll({
+            attributes: {
+                exclude: ["password"]
+            },
             where: {
                 title: {
                     [Op.like]: `%${query}%`,
@@ -123,11 +138,27 @@ module.exports.searchUser = async (req, res) => {
 
 module.exports.createUser = async (req, res) => {
     try {
-        const {email, nickname, password, role_id} = req.body;
+        const {email, nickname, password} = req.body;
 
-        if(!email || !nickname || !password || !role_id) {
+        if(!email || !nickname || !password) {
             return res.status(400).json({
                 error: "Bad request!"
+            });
+        }
+
+        const userWithNickname = await User.findOne({ where: { nickname } });
+
+        if(userWithNickname) {
+            return res.status(400).json({
+                error: "User with this nickname already registered!"
+            });
+        }
+
+        const userWithEmail = await User.findOne({ where: { email } });
+
+        if(userWithEmail) {
+            return res.status(400).json({
+                error: "User with this email already registered!"
             });
         }
 
@@ -137,11 +168,11 @@ module.exports.createUser = async (req, res) => {
             email,
             nickname,
             password: hashedPassword,
-            role_id,
+            role_id: "1ff86592-6861-11ef-b088-0242ac140002",
             allowed_notifications: 0
         })
 
-        res.status(201).json(user);
+        res.status(201).json({ id: user.id });
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -165,7 +196,14 @@ module.exports.updateUser = async (req, res) => {
 
         await user.save();
 
-        res.status(200).json(user);
+        const newUser = await User.findByPk(userId, {
+            attributes: {
+              exclude: ["password", "role_id"]
+            },
+            include: Role
+        });
+
+        res.status(200).json(newUser);
     } catch (e) {
         res.status(500).json({
             error: e.message
@@ -183,7 +221,7 @@ module.exports.deleteUser = async (req, res) => {
 
         await user.destroy();
 
-        res.status(204);
+        res.status(200).json({ id: userId });
     } catch (e) {
         res.status(500).json({
             error: e.message

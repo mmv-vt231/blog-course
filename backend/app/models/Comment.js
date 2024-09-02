@@ -25,12 +25,12 @@ const Comment = sequelize.define(
             type: DataTypes.TEXT,
             allowNull: false,
         },
-        created_at: {
-            type: 'TIMESTAMP',
-            defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-            allowNull: false
-        }
     },
+    {
+        timestamps: true,
+        createdAt: "created_at",
+        updatedAt: false,
+    }
 );
 
 (async () => {
